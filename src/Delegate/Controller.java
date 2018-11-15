@@ -1,4 +1,4 @@
-package MandelBrotGUI;
+package Delegate;
 
 public class Controller {
 }

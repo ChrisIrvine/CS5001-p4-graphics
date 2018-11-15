@@ -26,7 +26,7 @@ The views and conclusions contained in the software and documentation are those
 of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 */
-package MandelBrotGUI;
+package Model;
 /**
  * The MandelbrotCalculator class contains methods which establish the Mandelbrot set.
  * The calcMandelbrotSet method below iterates over X,Y positions and establishes for specified parameter values a 2-D array containing
