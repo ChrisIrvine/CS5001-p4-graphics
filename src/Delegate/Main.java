@@ -1,18 +1,41 @@
 package Delegate;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.CanvasBuilder;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        Pane mandelPane = new Pane();
+        Canvas canvas = CanvasBuilder
+                .create()
+                .height(Configuration.HEIGHT)
+                .width(Configuration.WIDTH)
+                .layoutX(Configuration.XOFFSET)
+                .layoutY(Configuration.YOFFSET)
+                .build();
+
+        Controller.paintMandelbrot(
+                canvas.getGraphicsContext2D(),
+                Controller.generateMandel()
+        );
+
+        mandelPane.getChildren().add(canvas);
+
+        primaryStage.setTitle("Mandelbrot Set");
+        Scene scene = new Scene(
+                mandelPane, Configuration.WIDTH + (2 * Configuration.XOFFSET)
+                , Configuration.HEIGHT + (2 * Configuration.YOFFSET) + 50
+        ); //the additional 50 pixels added to the Height is to accommodate a
+        //navigation bar
+        scene.setFill(Color.WHITE);
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
