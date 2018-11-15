@@ -1,11 +1,9 @@
 package Delegate;
 
 import Model.MandelbrotCalculator;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.Arrays;
 
 public class Controller {
 
@@ -24,14 +22,20 @@ public class Controller {
     static void paintMandelbrot(GraphicsContext point, int[][] mandelbrotSet) {
         for(int i = 0; i < mandelbrotSet.length; i++) {
             for(int j = 0; j < mandelbrotSet[i].length; j++) {
-                if(mandelbrotSet[j][i] >= 50) {
+                if(mandelbrotSet[j][i] == 50) {
                     point.setFill(Color.BLACK);
                     //System.out.println("painting black");
+                } else if (mandelbrotSet[j][i] < 50){
+                    point.setFill(Color.rgb((255/mandelbrotSet[j][i]), (255/mandelbrotSet[j][i]), (217/mandelbrotSet[j][i])));
                 } else {
-                    point.setFill(Color.GREY);
+                    point.setFill(Color.rgb(32, 73, 217));
                 }
                 point.fillRect(i, j, 1.0, 1.0);
             }
         }
     }
+
+//    static int converge(double j, double i, int steps) {
+//
+//    }
 }
