@@ -36,7 +36,7 @@ public class Main extends Application {
 
         //Add items to pane
         mandelPane.setTop(createToolbar());
-        mandelPane.setCenter(paintMandel());
+        mandelPane.setCenter(paintMandel(1));
 
         primaryStage.setTitle("Mandelbrot Set");
         Scene scene = new Scene(
@@ -90,24 +90,50 @@ public class Main extends Application {
 
         updateIterations.setOnAction(event -> {
             Controller.updateIterations(Integer.valueOf(iterations.getText()));
-            Controller.paintMandelbrot(canvas.getGraphicsContext2D(), Controller.generateDefaultMandel());
+            if(Controller.getCurrentMinReal() == 0.0) {
+                System.out.println("Generating Default Mandelbrot Image");
+                mandelPane.getChildren().remove(canvas);
+                mandelPane.setCenter(paintMandel(1));
+            } else {
+                System.out.println("Generating zoomed Mandelbrot Image");
+                //Controller.paintMandelbrot(canvas.getGraphicsContext2D(), Controller.generateMandel());
+                mandelPane.getChildren().remove(canvas);
+                mandelPane.setCenter(paintMandel(2));
+            }
             System.out.println("Iterations now set to: " + Controller.getIterations());
+        });
+
+        reset.setOnAction(event -> {
+            Controller.updateParams(MandelbrotCalculator.getInitialMinReal(),
+                    MandelbrotCalculator.getInitialMaxReal(),
+                    MandelbrotCalculator.getInitialMinImaginary(),
+                    MandelbrotCalculator.getInitialMaxImaginary());
+            Controller.updateIterations(MandelbrotCalculator.getInitialMaxIterations());
+            mandelPane.getChildren().remove(canvas);
+            mandelPane.setCenter(paintMandel(1));
+
         });
 
         return new VBox(toolBar);
     }
 
-    private Canvas paintMandel() {
+    private Canvas paintMandel(int switchCon) {
         final Rectangle zoom = new Rectangle(0, 0, 0, 0);
         final Point anchor = new Point();
+        GraphicsContext gc = canvas.getGraphicsContext2D();
         //final Line pan = new Line();
 
-        Controller.paintMandelbrot(
-                canvas.getGraphicsContext2D(),
-                Controller.generateDefaultMandel()
-        );
-
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        switch (switchCon) {
+            case 1:
+                Controller.paintMandelbrot(gc, Controller.generateDefaultMandel());
+                break;
+            case 2:
+                Controller.paintMandelbrot(gc, Controller.generateMandel());
+                break;
+            default:
+                Controller.paintMandelbrot(gc, Controller.generateDefaultMandel());
+                break;
+        }
 
         canvas.setOnMousePressed(event -> {
             anchor.setLocation(event.getX(), event.getY());
@@ -131,10 +157,9 @@ public class Main extends Application {
             zoom.setY(event.getY());
             System.out.println("Start Coords: " + anchor.getX() + ", " + anchor.getY());
             System.out.println("End Coords: " + zoom.getX() + ", " + zoom.getY());
-            Controller.paintMandelbrot(gc, Controller.generateZoomedMandel(anchor.getX(), zoom.getX(), anchor.getY(), zoom.getY()));
-            mandelPane.setCenter(null);
-            mandelPane.setCenter(canvas);
-            canvas.setOnMouseClicked(null);
+            Controller.updateParams(anchor.getX(), zoom.getX(), anchor.getY(), zoom.getY());
+            mandelPane.getChildren().remove(canvas);
+            mandelPane.setCenter(paintMandel(2));
         });
 
         return canvas;

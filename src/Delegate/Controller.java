@@ -4,11 +4,17 @@ import Model.MandelbrotCalculator;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.awt.event.MouseAdapter;
+
 
 public class Controller {
 
     private static MandelbrotCalculator mdc = new MandelbrotCalculator();
     private static int currentIterations = MandelbrotCalculator.getInitialMaxIterations();
+    private static double currentMinReal = MandelbrotCalculator.getInitialMinReal();
+    private static double currentMaxReal = MandelbrotCalculator.getInitialMaxReal();
+    private static double currentMinImaginary = MandelbrotCalculator.getInitialMinImaginary();
+    private static double currentMaxImaginary = MandelbrotCalculator.getInitialMaxImaginary();
 
     static int[][] generateDefaultMandel(){
         return mdc.calcMandelbrotSet(Configuration.WIDTH, Configuration.HEIGHT,
@@ -26,10 +32,10 @@ public class Controller {
         newMinImagine = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMinImagine);
         newMaxImagine = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMaxImagine);
 
-        System.out.println("New min real: " + newMinReal);
-        System.out.println("New max real: " + newMaxReal);
-        System.out.println("New min im: " + newMinImagine);
-        System.out.println("New max im: " + newMaxImagine);
+        currentMinReal = newMinReal;
+        currentMaxReal = newMaxReal;
+        currentMinImaginary = newMinImagine;
+        currentMaxImaginary = newMaxImagine;
 
         return mdc.calcMandelbrotSet(Configuration.WIDTH, Configuration.HEIGHT,
                 newMinReal, newMaxReal, newMinImagine, newMaxImagine,
@@ -42,7 +48,6 @@ public class Controller {
             for(int j = 0; j < mandelbrotSet[i].length; j++) {
                 if(mandelbrotSet[j][i] == currentIterations || mandelbrotSet[j][i] <= 2) {
                     point.setFill(Color.BLACK);
-                    //System.out.println("painting black");
                 } else if (mandelbrotSet[j][i] <= currentIterations/2){
                     point.setFill(Color.rgb(255/mandelbrotSet[j][i], 0, 0));
                 } else if (mandelbrotSet[j][i] > currentIterations/2){
@@ -64,6 +69,25 @@ public class Controller {
 
     static int getIterations() {
         return currentIterations;
+    }
+
+    static double getCurrentMinReal() {
+        return currentMinReal;
+    }
+
+    static int[][] generateMandel() {
+        return mdc.calcMandelbrotSet(Configuration.WIDTH, Configuration.HEIGHT,
+                currentMinReal, currentMaxReal, currentMinImaginary,
+                currentMaxImaginary, currentIterations, MandelbrotCalculator.getDefaultRadiusSquared());
+    }
+
+    static void updateParams(double x, double x1, double y, double y1) {
+        double tempHolder = currentMinReal;
+        currentMinReal = scalePos(currentMinReal, currentMaxReal, x);
+        currentMaxReal = scalePos(tempHolder, currentMaxReal, x1);
+        tempHolder = currentMaxImaginary;
+        currentMinImaginary = scalePos(currentMinImaginary, currentMaxImaginary, y);
+        currentMaxImaginary = scalePos(tempHolder, currentMaxImaginary, y1);
     }
 //
 //
