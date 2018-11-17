@@ -44,16 +44,38 @@ package Model;
 public class MandelbrotCalculator {
 
     // Initial parameter values
-    protected static final double INITIAL_MIN_REAL = -2.0;
-    protected static final double INITIAL_MAX_REAL = 0.7;
-    protected static final double INITIAL_MIN_IMAGINARY = -1.25;
-    protected static final double INITIAL_MAX_IMAGINARY = 1.25;
-    protected static final int INITIAL_MAX_ITERATIONS = 50;
+    private static final double INITIAL_MIN_REAL = -2.0;
+    private static final double INITIAL_MAX_REAL = 0.7;
+    private static final double INITIAL_MIN_IMAGINARY = -1.25;
+    private static final double INITIAL_MAX_IMAGINARY = 1.25;
+    private static final int INITIAL_MAX_ITERATIONS = 50;
 
     // Default parameter values
-    protected static final double DEFAULT_RADIUS_SQUARED = 4.0;
+    private static final double DEFAULT_RADIUS_SQUARED = 4.0;
 
+    public static double getInitialMinReal() {
+        return INITIAL_MIN_REAL;
+    }
 
+    public static double getInitialMaxReal() {
+        return INITIAL_MAX_REAL;
+    }
+
+    public static double getInitialMinImaginary() {
+        return INITIAL_MIN_IMAGINARY;
+    }
+
+    public static double getInitialMaxImaginary() {
+        return INITIAL_MAX_IMAGINARY;
+    }
+
+    public static int getInitialMaxIterations() {
+        return INITIAL_MAX_ITERATIONS;
+    }
+
+    public static double getDefaultRadiusSquared() {
+        return DEFAULT_RADIUS_SQUARED;
+    }
 
     /**
      * Method which calculates the number of iterations over which Z_n+1 = Z_n^2 + C can be applied for Z starting at the origin and a specific constant C (given by its Real and cImaginary components).
