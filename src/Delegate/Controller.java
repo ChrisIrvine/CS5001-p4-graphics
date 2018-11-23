@@ -1,6 +1,7 @@
 package Delegate;
 
 import Model.MandelbrotCalculator;
+import Model.Setting;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import java.util.ArrayList;
@@ -15,8 +16,7 @@ public class Controller {
     private static double currentMaxReal = MandelbrotCalculator.getInitialMaxReal();
     private static double currentMinImaginary = MandelbrotCalculator.getInitialMinImaginary();
     private static double currentMaxImaginary = MandelbrotCalculator.getInitialMaxImaginary();
-
-    // Setting Array = [minReal, maxReal, minImaginary, maxImaginary, iterations]
+    private static double zoomFactor = 1.00;
     private static ArrayList<Setting> settings = new ArrayList<>();
 
 
@@ -35,48 +35,94 @@ public class Controller {
                 s.getMaxImaginary(), s.getIterations(),
                 MandelbrotCalculator.getDefaultRadiusSquared());
     }
-//
-//    static int[][] generateZoomedMandel(double newMinReal, double newMaxReal, double newMinImagine, double newMaxImagine) {
-//        newMinReal = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMinReal, Configuration.WIDTH);
-//        newMaxReal = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMaxReal, Configuration.WIDTH);
-//        newMinImagine = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMinImagine, Configuration.HEIGHT);
-//        newMaxImagine = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMaxImagine, Configuration.HEIGHT);
-//
-//        currentMinReal = newMinReal;
-//        currentMaxReal = newMaxReal;
-//        currentMinImaginary = newMinImagine;
-//        currentMaxImaginary = newMaxImagine;
-//
-//
-//
-//        System.out.println("Real: " + currentMinReal + ", " + currentMaxReal);
-//        System.out.println("Imaginary: " + currentMinImaginary + ", " + currentMaxImaginary);
-//
-//        return mdc.calcMandelbrotSet(Configuration.WIDTH, Configuration.HEIGHT,
-//                newMinReal, newMaxReal, newMinImagine, newMaxImagine,
-//                currentIterations,
-//                MandelbrotCalculator.getDefaultRadiusSquared());
-//    }
 
-    static void paintMandelbrot(GraphicsContext point, int[][] mandelbrotSet) {
+
+    static void paintMandelbrot(GraphicsContext point, int[][] mandelbrotSet, int colour) {
         for(int i = 0; i < mandelbrotSet.length; i++) {
             for(int j = 0; j < mandelbrotSet[i].length; j++) {
-                if(mandelbrotSet[j][i] == settings.get(settingStep).getIterations() || mandelbrotSet[j][i] <= 2) {
-                    point.setFill(Color.BLACK);
-                } else if (mandelbrotSet[j][i] <= settings.get(settingStep).getIterations()/2){
-                    point.setFill(Color.rgb(255/mandelbrotSet[j][i], 0, 0));
-                } else if (mandelbrotSet[j][i] > settings.get(settingStep).getIterations()/2){
-                    point.setFill(Color.rgb(255, mandelbrotSet[j][i]/255, mandelbrotSet[j][i]/255));
+                switch (colour) {
+                    case 0:
+                        if (mandelbrotSet[j][i] == settings.get(settingStep).getIterations() || mandelbrotSet[j][i] <= 2) {
+                            point.setFill(Color.BLACK);
+                        } else if (mandelbrotSet[j][i] <= settings.get(settingStep).getIterations() / 2) {
+                            point.setFill(Color.rgb(255, 255, 255));
+                        } else if (mandelbrotSet[j][i] > settings.get(settingStep).getIterations() / 2) {
+                            point.setFill(Color.rgb(255, 255, 255));
+                        }
+                        break;
+                    case 1:
+                        if (mandelbrotSet[j][i] == settings.get(settingStep).getIterations() || mandelbrotSet[j][i] <= 2) {
+                            point.setFill(Color.BLACK);
+                        } else if (mandelbrotSet[j][i] <= settings.get(settingStep).getIterations() / 2) {
+                            point.setFill(Color.rgb(255 / mandelbrotSet[j][i], 0, 0));
+                        } else if (mandelbrotSet[j][i] > settings.get(settingStep).getIterations() / 2) {
+                            point.setFill(Color.rgb(255, mandelbrotSet[j][i] / 255, mandelbrotSet[j][i] / 255));
+                        }
+                        break;
+                    case 2:
+                        if(mandelbrotSet[j][i] == settings.get(settingStep).getIterations() || mandelbrotSet[j][i] <= 2) {
+                            point.setFill(Color.BLACK);
+                        } else if (mandelbrotSet[j][i] <= settings.get(settingStep).getIterations()/2){
+                            point.setFill(Color.rgb(0, 255/mandelbrotSet[j][i], 0));
+                        } else if (mandelbrotSet[j][i] > settings.get(settingStep).getIterations()/2){
+                            point.setFill(Color.rgb(mandelbrotSet[j][i]/255, 255, mandelbrotSet[j][i]/255));
+                        }
+                        break;
+                    case 3:
+                        if(mandelbrotSet[j][i] == settings.get(settingStep).getIterations() || mandelbrotSet[j][i] <= 2) {
+                            point.setFill(Color.BLACK);
+                        } else if (mandelbrotSet[j][i] <= settings.get(settingStep).getIterations()/2){
+                            point.setFill(Color.rgb(0, 0, 255/mandelbrotSet[j][i]));
+                        } else if (mandelbrotSet[j][i] > settings.get(settingStep).getIterations()/2){
+                            point.setFill(Color.rgb(mandelbrotSet[j][i]/255, mandelbrotSet[j][i]/255, 255));
+                        }
+                        break;
+                    case 4:
+                        if(mandelbrotSet[j][i] == settings.get(settingStep).getIterations() || mandelbrotSet[j][i] <= 2) {
+                            point.setFill(Color.BLACK);
+                        } else if (mandelbrotSet[j][i] <= settings.get(settingStep).getIterations()/2){
+                            point.setFill(Color.rgb(0, 255/mandelbrotSet[j][i], 255/mandelbrotSet[j][i]));
+                        } else if (mandelbrotSet[j][i] > settings.get(settingStep).getIterations()/2){
+                            point.setFill(Color.rgb(mandelbrotSet[j][i]/255, 255, 255));
+                        }
+                        break;
+                    case 5:
+                        if(mandelbrotSet[j][i] == settings.get(settingStep).getIterations() || mandelbrotSet[j][i] <= 2) {
+                            point.setFill(Color.BLACK);
+                        } else if (mandelbrotSet[j][i] <= settings.get(settingStep).getIterations()/2){
+                            point.setFill(Color.rgb(255/mandelbrotSet[j][i], 255/mandelbrotSet[j][i], 0));
+                        } else if (mandelbrotSet[j][i] > settings.get(settingStep).getIterations()/2){
+                            point.setFill(Color.rgb(255, 255, mandelbrotSet[j][i]/255));
+                        }
+                        break;
+                    case 6:
+                        if(mandelbrotSet[j][i] == settings.get(settingStep).getIterations() || mandelbrotSet[j][i] <= 2) {
+                            point.setFill(Color.BLACK);
+                        } else if (mandelbrotSet[j][i] <= settings.get(settingStep).getIterations()/2){
+                            point.setFill(Color.rgb(255/mandelbrotSet[j][i], 0, 255/mandelbrotSet[j][i]));
+                        } else if (mandelbrotSet[j][i] > settings.get(settingStep).getIterations()/2){
+                            point.setFill(Color.rgb(255, mandelbrotSet[j][i]/255, 255));
+                        }
+                        break;
+                    default:
+                        if (mandelbrotSet[j][i] == settings.get(settingStep).getIterations() || mandelbrotSet[j][i] <= 2) {
+                            point.setFill(Color.BLACK);
+                        } else if (mandelbrotSet[j][i] <= settings.get(settingStep).getIterations() / 2) {
+                            point.setFill(Color.rgb(255, 255, 255));
+                        } else if (mandelbrotSet[j][i] > settings.get(settingStep).getIterations() / 2) {
+                            point.setFill(Color.rgb(255, 255, 255));
+                        }
+                        break;
                 }
                 point.fillRect(i, j, 1, 1);
             }
         }
     }
 
-    private static double scalePos(double startMin, double startMax, double pos, int dimension) {
-        double realGap = (startMin - startMax) / dimension;
-        System.out.println(realGap);
-        return realGap * pos;
+    private static double scalePos(double range , double pos, int dimension, double initial) {
+        double realGap = pos / (double) dimension;
+        System.out.println("Gap: " + realGap);
+        return (realGap * range) + initial;
     }
 
     static void updateIterations(int newIterations) {
@@ -87,12 +133,14 @@ public class Controller {
         return currentIterations;
     }
 
-    static double getCurrentMinReal() {
-        return currentMinReal;
+    static double getZoomFactor() {
+        return zoomFactor;
     }
+
 
     static int[][] generateMandel() {
         System.out.println("Settings: " + settingStep);
+        System.out.println(settings.get(settingStep).getMinReal() + ", " + settings.get(settingStep).getMaxReal());
         return mdc.calcMandelbrotSet(Configuration.WIDTH, Configuration.HEIGHT,
                 settings.get(settingStep).getMinReal(),
                 settings.get(settingStep).getMaxReal(),
@@ -103,12 +151,14 @@ public class Controller {
     }
 
     static void updateParams(double x, double x1, double y, double y1) {
-        double tempHolder = currentMinReal;
-        currentMinReal = scalePos(currentMinReal, currentMaxReal, x, Configuration.WIDTH);
-        currentMaxReal = scalePos(tempHolder, currentMaxReal, x1, Configuration.WIDTH);
-        tempHolder = currentMaxImaginary;
-        currentMinImaginary = scalePos(currentMinImaginary, currentMaxImaginary, y, Configuration.HEIGHT);
-        currentMaxImaginary = scalePos(tempHolder, currentMaxImaginary, y1, Configuration.HEIGHT);
+        double realRange = currentMaxReal - currentMinReal;
+        double imagineRange = currentMaxImaginary - currentMinImaginary;
+        double holder = currentMinReal;
+        currentMinReal = scalePos(realRange, x, Configuration.WIDTH, currentMinReal);
+        currentMaxReal = scalePos(realRange, x1, Configuration.WIDTH, holder);
+        holder = currentMinImaginary;
+        currentMinImaginary = scalePos(imagineRange, y, Configuration.HEIGHT, currentMinImaginary);
+        currentMaxImaginary = scalePos(imagineRange, y1, Configuration.HEIGHT, holder);
     }
 
     static void restoreDefaults() {
@@ -142,19 +192,28 @@ public class Controller {
         settings.add(s);
         settingStep++;
     }
-//
-//
-//    private static double[] scaleXY(double j, double i) {
-//        //calculate the distance from min x to max x
-//        //divide by number of points in x
-//        //multiple by j
-//        double xGap = (MandelbrotCalculator.getInitialMinReal() - MandelbrotCalculator.getInitialMaxReal()) / Configuration.WIDTH;
-//        sx = xGap * j;
-//
-//        //repeat using the imaginary numbers to get the sy
-//        double yGap = (MandelbrotCalculator.getInitialMinImaginary() - MandelbrotCalculator.getInitialMaxImaginary()) / Configuration.HEIGHT;
-//        sy = yGap * i;
-//
-//        return new Double[2]{sx, sy};
-//    }
+
+    static void calculateDistance(double startX, double endX, double startY,
+                                  double endY) {
+        double xDistance = (startX - endX);
+        double yDistance = (startY - endY);
+        xDistance = (xDistance / Configuration.HEIGHT)
+                * Math.abs(currentMinReal - currentMaxReal);
+        yDistance = (yDistance / Configuration.HEIGHT)
+                * Math.abs(currentMinImaginary - currentMaxImaginary);
+        currentMinReal += xDistance;
+        currentMaxReal += xDistance;
+        currentMinImaginary += yDistance;
+        currentMaxImaginary += yDistance;
+    }
+
+    static void calculateZoom() {
+        Controller.zoomFactor *= Math.max(Math.abs(
+                MandelbrotCalculator.getInitialMinReal() -
+                        settings.get(settingStep).getMinReal())/
+                Configuration.WIDTH,
+                Math.abs(MandelbrotCalculator.getInitialMinImaginary() -
+                        settings.get(settingStep).getMinImaginary())/
+                        Configuration.WIDTH);
+    }
 }

@@ -1,4 +1,4 @@
-package Delegate;
+package Model;
 
 public class Setting {
 
