@@ -13,11 +13,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.awt.Point;
 
-
+/**
+ * Main class for this application. Will allow the users to generate and
+ * manipulate the Mandelbrot Set Image.
+ */
 public class Main extends Application {
 
     private BorderPane mandelPane = new BorderPane();
@@ -34,6 +36,23 @@ public class Main extends Application {
     private boolean panZoom = true;
     private int colour;
 
+    /**
+     * Main method for the application. Will generate the GUI by triggering the
+     * JavaFX's launch() method, which will then trigger the start() method.
+     * @param args
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    /**
+     * Overriden start method (from JavaFX) that will construct the ToolBar and
+     * Canvas containing the Mandelbrot Set Image. Then will add those
+     * components to the BorderPane. Will then construct the stage and the
+     * scene in order to display the BorderPane.
+     * @param primaryStage - stage to display the BorderPane on.
+     * @throws Exception - exception handling.
+     */
     @Override
     public void start(Stage primaryStage) throws Exception{
         //Add items to pane
@@ -51,11 +70,12 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
+    /**
+     * Function to declare the components of a ToolBar, in addition to the
+     * functionality of those components. The ToolBar object will then be
+     * wrapped inside a VBox object, which is then returned.
+     * @return VBox containing the ToolBar
+     */
     private VBox createToolbar() {
         ToolBar toolBar = new ToolBar();
 
@@ -142,6 +162,16 @@ public class Main extends Application {
         return new VBox(toolBar);
     }
 
+    /**
+     * Method to generate the Mandelbrot Set Image inside a canvas. Will
+     * generate the "default" image or a mutated image depending on the integer
+     * value of the switchCon parameter. Additionally will dictate whether the
+     * user can zoom or pan.
+     * @param switchCon - controls which case is triggered in the switch
+     *                  statement
+     * @param panZoom - if true, user can zoom. if false, user can pan.
+     * @return - Canvas containing the Mandelbrot Set Image
+     */
     private Canvas paintMandel(int switchCon, boolean panZoom) {
         final Rectangle zoom = new Rectangle(0, 0, 0, 0);
         final Point anchor = new Point();

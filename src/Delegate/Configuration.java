@@ -1,5 +1,8 @@
 package Delegate;
 
+/**
+ * Class to hold final variables for the application.
+ */
 class Configuration {
 
     //Canvas sizes
