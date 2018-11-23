@@ -79,7 +79,7 @@ public class MandelbrotCalculator {
 
     /**
      * Method which calculates the number of iterations over which Z_n+1 = Z_n^2 + C can be applied for Z starting at the origin and a specific constant C (given by its Real and cImaginary components).
-     * If the square of the absolute value of Z is still inside the defined squaredRadius after maxIterations then we stop iterating and return maxIterations, implicitly assuming that Z will never escape the radius for the given setting of the constant C.
+     * If the square of the absolute value of Z is still inside the defined squaredRadius after maxIterations then we stop iterating and return maxIterations, implicitly assuming that Z will never escape the radius for the given Setting of the constant C.
      * In this case, the value of C is treated as being part of the Mandelbrot set, i.e. the set of starting constants C for which the value of Z remains bounded within the complex plane under iteration.
      *
      * @param cReal the real component (akin to X component) of the constant C.
