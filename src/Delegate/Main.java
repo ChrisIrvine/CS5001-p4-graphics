@@ -32,8 +32,6 @@ public class Main extends Application {
             .build();
     @Override
     public void start(Stage primaryStage) throws Exception{
-
-
         //Add items to pane
         mandelPane.setTop(createToolbar());
         mandelPane.setCenter(paintMandel(1));
@@ -90,28 +88,38 @@ public class Main extends Application {
 
         updateIterations.setOnAction(event -> {
             Controller.updateIterations(Integer.valueOf(iterations.getText()));
-            if(Controller.getCurrentMinReal() == 0.0) {
-                System.out.println("Generating Default Mandelbrot Image");
-                mandelPane.getChildren().remove(canvas);
-                mandelPane.setCenter(paintMandel(1));
-            } else {
-                System.out.println("Generating zoomed Mandelbrot Image");
-                //Controller.paintMandelbrot(canvas.getGraphicsContext2D(), Controller.generateMandel());
-                mandelPane.getChildren().remove(canvas);
-                mandelPane.setCenter(paintMandel(2));
-            }
+//            if(Controller.getCurrentMinReal() == 0.0) {
+//                System.out.println("Generating Default Mandelbrot Image");
+//                mandelPane.getChildren().remove(canvas);
+//                mandelPane.setCenter(paintMandel(1));
+//            } else {
+//                System.out.println("Generating zoomed Mandelbrot Image");
+//                //Controller.paintMandelbrot(canvas.getGraphicsContext2D(), Controller.generateMandel());
+//                mandelPane.getChildren().remove(canvas);
+//                mandelPane.setCenter(paintMandel(2));
+//            }
+            Controller.createSetting();
+            mandelPane.getChildren().remove(canvas);
+            mandelPane.setCenter(paintMandel(2));
             System.out.println("Iterations now set to: " + Controller.getIterations());
         });
 
         reset.setOnAction(event -> {
-            Controller.updateParams(MandelbrotCalculator.getInitialMinReal(),
-                    MandelbrotCalculator.getInitialMaxReal(),
-                    MandelbrotCalculator.getInitialMinImaginary(),
-                    MandelbrotCalculator.getInitialMaxImaginary());
-            Controller.updateIterations(MandelbrotCalculator.getInitialMaxIterations());
+            Controller.restoreDefaults();
             mandelPane.getChildren().remove(canvas);
             mandelPane.setCenter(paintMandel(1));
+        });
 
+        undo.setOnAction(event -> {
+            Controller.undo();
+            mandelPane.getChildren().remove(canvas);
+            mandelPane.setCenter(paintMandel(2));
+        });
+
+        redo.setOnAction(event -> {
+            Controller.redo();
+            mandelPane.getChildren().remove(canvas);
+            mandelPane.setCenter(paintMandel(2));
         });
 
         return new VBox(toolBar);
@@ -130,6 +138,9 @@ public class Main extends Application {
             case 2:
                 Controller.paintMandelbrot(gc, Controller.generateMandel());
                 break;
+//            case 3:
+//                Controller.paintMandelbrot(gc, Controller.generateZoomedMandel(anchor.getX(), zoom.getX(), anchor.getY(), zoom.getY()));
+//                break;
             default:
                 Controller.paintMandelbrot(gc, Controller.generateDefaultMandel());
                 break;
@@ -158,6 +169,7 @@ public class Main extends Application {
             System.out.println("Start Coords: " + anchor.getX() + ", " + anchor.getY());
             System.out.println("End Coords: " + zoom.getX() + ", " + zoom.getY());
             Controller.updateParams(anchor.getX(), zoom.getX(), anchor.getY(), zoom.getY());
+            Controller.createSetting();
             mandelPane.getChildren().remove(canvas);
             mandelPane.setCenter(paintMandel(2));
         });

@@ -3,54 +3,69 @@ package Delegate;
 import Model.MandelbrotCalculator;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
-import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
 
 
 public class Controller {
 
     private static MandelbrotCalculator mdc = new MandelbrotCalculator();
+    private static int settingStep = -1;
     private static int currentIterations = MandelbrotCalculator.getInitialMaxIterations();
     private static double currentMinReal = MandelbrotCalculator.getInitialMinReal();
     private static double currentMaxReal = MandelbrotCalculator.getInitialMaxReal();
     private static double currentMinImaginary = MandelbrotCalculator.getInitialMinImaginary();
     private static double currentMaxImaginary = MandelbrotCalculator.getInitialMaxImaginary();
 
+    // Setting Array = [minReal, maxReal, minImaginary, maxImaginary, iterations]
+    private static ArrayList<Setting> settings = new ArrayList<>();
+
+
     static int[][] generateDefaultMandel(){
-        return mdc.calcMandelbrotSet(Configuration.WIDTH, Configuration.HEIGHT,
-                MandelbrotCalculator.getInitialMinReal(),
+        Setting s = new Setting(MandelbrotCalculator.getInitialMinReal(),
                 MandelbrotCalculator.getInitialMaxReal(),
                 MandelbrotCalculator.getInitialMinImaginary(),
                 MandelbrotCalculator.getInitialMaxImaginary(),
-                MandelbrotCalculator.getInitialMaxIterations(),
-                MandelbrotCalculator.getDefaultRadiusSquared());
-    }
+                MandelbrotCalculator.getInitialMaxIterations());
 
-    static int[][] generateZoomedMandel(double newMinReal, double newMaxReal, double newMinImagine, double newMaxImagine) {
-        newMinReal = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMinReal);
-        newMaxReal = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMaxReal);
-        newMinImagine = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMinImagine);
-        newMaxImagine = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMaxImagine);
-
-        currentMinReal = newMinReal;
-        currentMaxReal = newMaxReal;
-        currentMinImaginary = newMinImagine;
-        currentMaxImaginary = newMaxImagine;
+        settings.add(s);
+        settingStep++;
 
         return mdc.calcMandelbrotSet(Configuration.WIDTH, Configuration.HEIGHT,
-                newMinReal, newMaxReal, newMinImagine, newMaxImagine,
-                currentIterations,
+                s.getMinReal(), s.getMaxReal(), s.getMinImaginary(),
+                s.getMaxImaginary(), s.getIterations(),
                 MandelbrotCalculator.getDefaultRadiusSquared());
     }
+//
+//    static int[][] generateZoomedMandel(double newMinReal, double newMaxReal, double newMinImagine, double newMaxImagine) {
+//        newMinReal = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMinReal, Configuration.WIDTH);
+//        newMaxReal = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMaxReal, Configuration.WIDTH);
+//        newMinImagine = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMinImagine, Configuration.HEIGHT);
+//        newMaxImagine = scalePos(MandelbrotCalculator.getInitialMinReal(), MandelbrotCalculator.getInitialMaxReal(), newMaxImagine, Configuration.HEIGHT);
+//
+//        currentMinReal = newMinReal;
+//        currentMaxReal = newMaxReal;
+//        currentMinImaginary = newMinImagine;
+//        currentMaxImaginary = newMaxImagine;
+//
+//
+//
+//        System.out.println("Real: " + currentMinReal + ", " + currentMaxReal);
+//        System.out.println("Imaginary: " + currentMinImaginary + ", " + currentMaxImaginary);
+//
+//        return mdc.calcMandelbrotSet(Configuration.WIDTH, Configuration.HEIGHT,
+//                newMinReal, newMaxReal, newMinImagine, newMaxImagine,
+//                currentIterations,
+//                MandelbrotCalculator.getDefaultRadiusSquared());
+//    }
 
     static void paintMandelbrot(GraphicsContext point, int[][] mandelbrotSet) {
         for(int i = 0; i < mandelbrotSet.length; i++) {
             for(int j = 0; j < mandelbrotSet[i].length; j++) {
-                if(mandelbrotSet[j][i] == currentIterations || mandelbrotSet[j][i] <= 2) {
+                if(mandelbrotSet[j][i] == settings.get(settingStep).getIterations() || mandelbrotSet[j][i] <= 2) {
                     point.setFill(Color.BLACK);
-                } else if (mandelbrotSet[j][i] <= currentIterations/2){
+                } else if (mandelbrotSet[j][i] <= settings.get(settingStep).getIterations()/2){
                     point.setFill(Color.rgb(255/mandelbrotSet[j][i], 0, 0));
-                } else if (mandelbrotSet[j][i] > currentIterations/2){
+                } else if (mandelbrotSet[j][i] > settings.get(settingStep).getIterations()/2){
                     point.setFill(Color.rgb(255, mandelbrotSet[j][i]/255, mandelbrotSet[j][i]/255));
                 }
                 point.fillRect(i, j, 1, 1);
@@ -58,9 +73,10 @@ public class Controller {
         }
     }
 
-    private static double scalePos(double startMinReal, double startMaxReal, double realPos) {
-        double realGap = (startMinReal - startMaxReal) / Configuration.WIDTH;
-        return realGap * realPos;
+    private static double scalePos(double startMin, double startMax, double pos, int dimension) {
+        double realGap = (startMin - startMax) / dimension;
+        System.out.println(realGap);
+        return realGap * pos;
     }
 
     static void updateIterations(int newIterations) {
@@ -76,18 +92,55 @@ public class Controller {
     }
 
     static int[][] generateMandel() {
+        System.out.println("Settings: " + settingStep);
         return mdc.calcMandelbrotSet(Configuration.WIDTH, Configuration.HEIGHT,
-                currentMinReal, currentMaxReal, currentMinImaginary,
-                currentMaxImaginary, currentIterations, MandelbrotCalculator.getDefaultRadiusSquared());
+                settings.get(settingStep).getMinReal(),
+                settings.get(settingStep).getMaxReal(),
+                settings.get(settingStep).getMinImaginary(),
+                settings.get(settingStep).getMaxImaginary(),
+                settings.get(settingStep).getIterations(),
+                MandelbrotCalculator.getDefaultRadiusSquared());
     }
 
     static void updateParams(double x, double x1, double y, double y1) {
         double tempHolder = currentMinReal;
-        currentMinReal = scalePos(currentMinReal, currentMaxReal, x);
-        currentMaxReal = scalePos(tempHolder, currentMaxReal, x1);
+        currentMinReal = scalePos(currentMinReal, currentMaxReal, x, Configuration.WIDTH);
+        currentMaxReal = scalePos(tempHolder, currentMaxReal, x1, Configuration.WIDTH);
         tempHolder = currentMaxImaginary;
-        currentMinImaginary = scalePos(currentMinImaginary, currentMaxImaginary, y);
-        currentMaxImaginary = scalePos(tempHolder, currentMaxImaginary, y1);
+        currentMinImaginary = scalePos(currentMinImaginary, currentMaxImaginary, y, Configuration.HEIGHT);
+        currentMaxImaginary = scalePos(tempHolder, currentMaxImaginary, y1, Configuration.HEIGHT);
+    }
+
+    static void restoreDefaults() {
+        currentMinReal = MandelbrotCalculator.getInitialMinReal();
+        currentMaxReal = MandelbrotCalculator.getInitialMaxReal();
+        currentMinImaginary = MandelbrotCalculator.getInitialMinImaginary();
+        currentMaxImaginary = MandelbrotCalculator.getInitialMaxImaginary();
+        currentIterations = MandelbrotCalculator.getInitialMaxIterations();
+    }
+
+    static void undo() {
+        if(settingStep != 0) {
+            settingStep--;
+        } else {
+            System.out.println("Nothing else to undo");
+        }
+    }
+
+    static void redo() {
+        if(settingStep != settings.size()-1) {
+            settingStep++;
+        } else {
+            System.out.println("Nothing else to redo");
+        }
+    }
+
+    static void createSetting() {
+        Setting s = new Setting(currentMinReal, currentMaxReal,
+                currentMinImaginary, currentMaxImaginary, currentIterations);
+
+        settings.add(s);
+        settingStep++;
     }
 //
 //
